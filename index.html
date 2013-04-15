@@ -1,0 +1,74 @@
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<script>
+  var socket = io.connect();
+  var hasHistory = false;
+  var urlrex = new RegExp(/^(https?:\/\/)?[a-zA-Z0-9]+\.[a-zA-Z0-9]+/i )
+  var username;
+
+  socket.on('connect', function(){
+    // call the server-side function 'adduser' and send one parameter (value of prompt)
+    username = window.location.pathname.replace(/\//g, '') || prompt('Username:')
+    socket.emit('adduser', username);
+    if(!hasHistory){
+       socket.emit('gethistory', username);
+       hasHistory = true;
+    }
+
+  });
+
+  socket.on('updatechat', function (timestamp, username, data) {
+    if (!data){
+     return;
+    }
+    var words = data.split(' ');
+    for (var i=0;i<words.length;i++){
+       if(urlrex.test(words[i])){
+           var url = words[i];
+           if(url.indexOf('http') === -1){
+               url = 'http://' + url;
+           }
+           link = '<a href="' + url + '" target="_blank">' + words[i] + '</a>'
+           data = data.replace(words[i], link);
+           data += '<div style="width:100%"><img style="max-width:100%" src="' + url + '" onerror="$(this).parent().hide()"></div>';
+       }
+    }
+    $('#conversation').append(timestamp + '  '+ '['+username + ']: ' + data + '<br>');
+    $("#convowrapper").scrollTop($("#convowrapper")[0].scrollHeight);
+  });
+
+  socket.on('updateusers', function(data) {
+    $('#users').empty();
+    $.each(data, function(key, value) {
+      $('#users').append('<div>' + key + '</div>');
+    });
+  });
+
+  $(function(){
+    $('#datasend').click( function() {
+      var message = $('#data').val();
+      $('#data').val('');
+      socket.emit('sendchat', message);
+      $("#data").focus();
+    });
+
+    $('#data').keypress(function(e) {
+      if(e.which == 13) {
+        $(this).blur();
+        $('#datasend').focus().click();
+        $("#data").focus();
+      }
+    });
+  });
+
+
+</script>
+<div style="float:left;width:100px;border-right:1px solid black;height:300px;padding:10px;overflow:scroll-y;">
+  <b>USERS</b>
+  <div id="users"></div>
+</div>
+<div id='convowrapper' style="float:left;width:90%;height:750px;overflow-y:scroll;padding:10px;">
+  <div id="conversation"></div>
+  <input id="data" style="width:800px;" />
+  <input type="button" id="datasend" value="Sagen" />
+</div>
