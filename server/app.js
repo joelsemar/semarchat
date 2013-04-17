@@ -1,6 +1,7 @@
 var express = require('express')
   , app = express()
   , http = require('http')
+  , path = require('path')
   , server = http.createServer(app)
   , io = require('socket.io').listen(server)
 
@@ -72,14 +73,21 @@ var auth = express.basicAuth(function(user, pass) {
 },'Super duper secret area');
 // routing
 
-app.get('/resume.pdf', function(req, res){
-   res.sendfile('/home/joel/resume.pdf');
-})
-app.get(/.*/, auth,  function (req, res) {
-  res.sendfile(__dirname + '/index.html');
-});
-app.get('/', auth, function (req, res) {
-  res.sendfile(__dirname + '/index.html');
+app.use(express.static(path.resolve('../client')));
+app.configure(function(){
+  app.get('/resume.pdf', function(req, res){
+    res.sendfile('/home/joel/resume.pdf');
+  })
+
+  app.get(/.*/, auth,  function (req, res) {
+    res.sendfile(path.resolve('../client/index.html'));
+  });
+
+  app.get('/', auth, function (req, res) {
+    res.sendfile(path.resolve('../client/index.html'));
+  });
+  app.use(app.router);
+
 });
 
 var usernames = {};
