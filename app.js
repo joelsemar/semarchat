@@ -3,12 +3,18 @@ var express = require('express')
   , http = require('http')
   , server = http.createServer(app)
   , io = require('socket.io').listen(server)
-  , redis = require("redis")
-  , client;
 
+try{
+   var redis = require('redis'), client;
+   client = redis.createClient();
+   client.on('error', dummyRedis);
+}
+catch(e){
+  dummyRedis();
+}
   
-client = redis.createClient();
-client.on('error', function(err){
+
+function dummyRedis(){
   client = {
     set: function(key, value){
       this[key] = value;
@@ -17,7 +23,8 @@ client.on('error', function(err){
       callback(null, this[key]);
     }
   }
-});
+
+};
 
 server.listen(8080);
  var emoticons = [
