@@ -65,7 +65,7 @@ socket.on('updatechat', function (timestamp, username, data) {
     unSeenMessages += 1;
   }
   $('#conversation').append(timestamp + '  '+ '['+username + ']: ' + data + '<br>');
-  $("#convowrapper").scrollTop($("#convowrapper")[0].scrollHeight);
+  $("#conversation").scrollTop($("#conversation")[0].scrollHeight);
 });
 
 socket.on('updateusers', function(data) {
