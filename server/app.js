@@ -4,9 +4,10 @@ var express = require('express')
   , path = require('path')
   , server = http.createServer(app)
   , io = require('socket.io').listen(server)
+  , client;
 
 try{
-   var redis = require('redis'), client;
+   var redis = require('redis');
    client = redis.createClient();
    client.on('error', dummyRedis);
 }
