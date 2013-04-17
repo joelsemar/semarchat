@@ -17,10 +17,11 @@
 
       window.onfocus =  function(){
         windowFocused = true;
-        unseenMessages = 0;
+        unSeenMessages = 0;
         if(tabFlashInterval){
           clearInterval(tabFlashInterval);
           tabFlashInterval = 0;
+          document.title = defaultTitle;
         }
       };
       window.onblur = function(){
