@@ -2,12 +2,24 @@ var express = require('express')
   , app = express()
   , http = require('http')
   , server = http.createServer(app)
-  , io = require('socket.io').listen(server);
+  , io = require('socket.io').listen(server)
+  , redis = require("redis")
+  , client;
 
-var redis = require("redis"),
-    client = redis.createClient();
+  
+client = redis.createClient();
+client.on('error', function(err){
+  client = {
+    set: function(key, value){
+      this[key] = value;
+    },
+    get: function(key, callback){
+      callback(null, this[key]);
+    }
+  }
+});
 
-server.listen(80);
+server.listen(8080);
  var emoticons = [
         { name: 'chompy', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/chompy.gif'},
         { name: 'cunt', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/21318/cunt-1350677043.png'},
