@@ -12,6 +12,13 @@ try{
 catch(e){
   dummyRedis();
 }
+try{
+  var config = require('./config.js')
+}
+catch(e){
+  console.log("replace the config.js.template with local config.js file");
+  process.exit(1);
+}
   
 
 function dummyRedis(){
@@ -26,7 +33,7 @@ function dummyRedis(){
 
 };
 
-server.listen(8080);
+server.listen(config.PORT);
  var emoticons = [
         { name: 'chompy', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/chompy.gif'},
         { name: 'cunt', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/21318/cunt-1350677043.png'},
