@@ -2,8 +2,11 @@ var socket = io.connect();
 var hasHistory = false;
 var urlrex = new RegExp(/^(https?:\/\/)?[a-zA-Z0-9]+\.[a-zA-Z0-9]+/i )
 var defaultTitle = 'SemarChat';
+var isMobile = navigator.userAgent.match(/android|iphone|ipad/i);
 var username 
   , unSeenMessages = 0
+  , history = [],
+  , defaultHistorySize = isMobile ? 100 : 1000
   , windowFocused = true
   , tabToggle = false
   , tabFlashInterval;
@@ -49,7 +52,7 @@ socket.on('connect', function(){
 
 });
 
-socket.on('updatechat', function (timestamp, username, data) {
+function updateChat(timestamp, username, data){
   if (!data){
       return;
   }
@@ -70,13 +73,23 @@ socket.on('updatechat', function (timestamp, username, data) {
   }
   $('#conversation').append( createComment(username, timestamp, data) );
   $("#conversation").scrollTop($("#conversation")[0].scrollHeight);
-});
+}
+
+socket.on('updatechat',updateChat);
 
 socket.on('updateusers', function(data) {
   $('#users').empty();
   $.each(data, function(key, value) {
     $('#users').append('<div>' + key + '</div>');
   });
+});
+
+socket.on('history', function(data){
+  history = data;
+  var shownHistory = history.slice(history.length - defaultHistorySize, history.length);
+  for (var i=0;i<shownHistory.length;i++){
+    updateChat(this, shownHistory[0]);
+  }
 });
 
 
@@ -105,13 +118,13 @@ $(function(){
     }
   });
   
-  if( navigator.userAgent.match(/android|iphone|ipad/i) ) {
-	$("head").append('<meta name="viewport" content="initial-scale=1, maximum-scale=1">');
-  	$("head").append('<link href="css/mobile.css" rel="stylesheet">');
-  	}
+  if(isMobile) {
+    $("head").append('<meta name="viewport" content="initial-scale=1, maximum-scale=1">');
+    $("head").append('<link href="css/mobile.css" rel="stylesheet">');
+  }
   else {
-  	$("head").append('<link href="css/desktop.css" rel="stylesheet">');
-  	}
+    $("head").append('<link href="css/desktop.css" rel="stylesheet">');
+  }
 });
 
 function Template(string){

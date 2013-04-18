@@ -147,9 +147,7 @@ io.sockets.on('connection', function (socket) {
   socket.on('gethistory', function(){
     client.get('history', function(err, res){
       var history = JSON.parse(res || '[]');
-      for(var i=0;i<history.length;i++){
-        socket.emit('updatechat', history[i][0], history[i][1], history[i][2]);
-      }
+      socket.emit('history', history);
     })
   });
 
