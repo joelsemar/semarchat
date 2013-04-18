@@ -2,41 +2,23 @@
   <head>
   <title>SemarChat</title>
     <script src="/socket.io/socket.io.js"></script>
-    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="/js/app.js"></script>
   </title>
   </head>
   <body>
-    <!--<div class="container-fluid fullheight">
-       <div class="row-fluid clearfix fullheight">
-          <div class="span2 column" style="overflow-y:auto;">
-              <b>USERS</b>
-                <div id="users"></div>
-          </div>
-          <div id='convowrapper' class="span10 column" style='overflow-y:auto'>
-            <div id="conversation" style='max-width:100%'></div>
-          </div>
-          <div class="span12 column footer">
-            <input id="data" style="width:70%;" />
-            <input type="button" id="datasend" value="Sagen" />
+    <center>
+      <div id="OutterContainer">
+        <div id="UsersContainer">
+          <h3>USERS</h3>
+          <div id="users"/> </div>
+        </div><div id="ConversationWrapper">
+          <div id="conversation"> </div>
+          <div id="CommentContainer">
+            <input id="data" placeholder="you know you want to"><div id="datasend">Sagen</div>
           </div>
         </div>
-     </div>-->
-     <center>
-			<div id="OutterContainer">
-				<div id="UsersContainer">
-					<h3>USERS</h3>
-					<div id="users">
-					</div>
-				</div><div id="ConversationWrapper">
-					<div id="conversation">
-					</div>
-					<div id="CommentContainer">
-						<input id="data" placeholder="you know you want to"><div id="datasend">Sagen</div>
-					</div>
-				</div>
-			</div>
-		</center>
+      </div>
+    </center>
   </body>
 </html>
