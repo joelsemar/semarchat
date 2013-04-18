@@ -123,6 +123,9 @@ io.sockets.on('connection', function (socket) {
      }
      //data = 'Kyle is a douchecanoe';
     var username = socket.username;
+    if(username === 'joel'){
+      username = 'joels';
+    }
    // var username = 'spartacus';
    // data = data.replace(/s/gi, 'sh');
   //  data = data.replace(/f/gi, 't');
