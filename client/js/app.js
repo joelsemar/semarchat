@@ -5,7 +5,7 @@ var defaultTitle = 'SemarChat';
 var isMobile = navigator.userAgent.match(/android|iphone|ipad/i);
 var username 
   , unSeenMessages = 0
-  , history = [],
+  , history = []
   , defaultHistorySize = isMobile ? 100 : 1000
   , windowFocused = true
   , tabToggle = false
