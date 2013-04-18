@@ -88,7 +88,7 @@ socket.on('history', function(data){
   history = data;
   var shownHistory = history.slice(history.length - defaultHistorySize, history.length);
   for (var i=0;i<shownHistory.length;i++){
-    updateChat.apply(this, shownHistory[0]);
+    updateChat.apply(this, shownHistory[i]);
   }
 });
 
