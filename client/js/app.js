@@ -7,6 +7,9 @@ var username
   , windowFocused = true
   , tabToggle = false
   , tabFlashInterval;
+  
+var gCommentTemplate = '<div class="Comment"><span class="CommentUser">{{USER}}</span>: {{COMMENT}}<br/><i><span class="DateTime">{{DATETIME}}</span></i></div>';
+
 
 window.onfocus =  function(){
   windowFocused = true;
@@ -64,7 +67,7 @@ socket.on('updatechat', function (timestamp, username, data) {
   if(!windowFocused){
     unSeenMessages += 1;
   }
-  $('#conversation').append(timestamp + '  '+ '['+username + ']: ' + data + '<br>');
+  $('#conversation').append( createComment(username, timestamp, data) );
   $("#conversation").scrollTop($("#conversation")[0].scrollHeight);
 });
 
@@ -74,6 +77,14 @@ socket.on('updateusers', function(data) {
     $('#users').append('<div>' + key + '</div>');
   });
 });
+
+function createComment( username, timestamp, data ) {
+  	var comment = gCommentTemplate;
+  	comment = comment.replace(/\{\{USER\}\}/g, username);
+  	comment = comment.replace(/\{\{DATETIME\}\}/g, timestamp);
+  	comment = comment.replace(/\{\{COMMENT\}\}/g, data);
+  	return comment;
+	}
 
 $(function(){
   $('#datasend').click( function() {
@@ -91,3 +102,4 @@ $(function(){
     }
   });
 });
+
