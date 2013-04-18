@@ -76,8 +76,8 @@ function updateChat(timestamp, username, data, prepend){
   }
   else{
     $('#conversation').append( createComment(username, timestamp, data) );
+    $("#conversation").scrollTop($("#conversation")[0].scrollHeight);
   }
-  $("#conversation").scrollTop($("#conversation")[0].scrollHeight);
 }
 
 socket.on('updatechat', updateChat);
@@ -105,6 +105,7 @@ function moarHistory(amount){
     historyItem.push(true);
     updateChat.apply(this, historyItem);
   });
+  $("#conversation").animate({ scrollTop: 0 });
 
 }
 
