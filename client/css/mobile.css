@@ -1,0 +1,79 @@
+body {
+	padding: 0;
+	margin: 0;
+	}
+
+#OutterContainer {
+	width: 100%;
+	padding: 0;
+	}
+
+#UsersContainer {
+	display: inline-block;
+	vertical-align: top;
+	width: 0%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+	}
+
+#ConversationWrapper {
+	display: inline-block;
+	vertical-align: top;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	position: relative;
+	}
+	
+#conversation {
+	margin-bottom: 50px;
+	height: 90%;
+	}
+	
+#data {
+	width: 75%;
+	padding: 3%;
+	}
+	
+#datasend {
+	display: inline-block;
+	margin-left: 20px;
+	background: black;
+	color: white;
+	padding: 7px;
+	border-radius: 5px;
+	}
+	
+#CommentContainer {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	background: grey;
+	padding: 10px 0 10px 0;
+	}
+	
+.Comment {
+	text-align: left;
+	margin: 10px;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+	-webkit-box-shadow: 5px 5px 5px #888;
+	padding: 5px;
+	}
+
+.CommentUser {
+	font-weight: bold;
+	}
+	
+.DateTime {
+	font-size: 0.8em;
+	}
+	
+.Callout {
+	font-weight: bold;
+	color: blue;
+	}
+	
