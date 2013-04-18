@@ -79,6 +79,21 @@ app.configure(function(){
   app.get('/resume.pdf', function(req, res){
     res.sendfile('/home/joel/resume.pdf');
   })
+  app.post('/deploy', function(req, res){
+     var exec  = require('child_process').exec;
+     var cmd = 'cd /home/joel/nodechat && git pull && sudo forever app.js restart';
+     exec(cmd, function (error, stdout, stderr) {
+        if (stdout){
+            console.log(stdout);
+        }
+        if (stderr){
+            console.log('ERROR: ' + stderr);
+        }
+        if (error !== null) {
+          console.log('exec error: ' + error);
+        }
+     });
+  })
 
   app.get(/.*/, auth,  function (req, res) {
     res.sendfile(path.resolve('../client/index.html'));

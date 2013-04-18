@@ -9,6 +9,7 @@ var username
   , tabFlashInterval;
   
 var gCommentTemplate = '<div class="Comment"><span class="CommentUser">{{USER}}</span>: {{COMMENT}}<br/><i><span class="DateTime">{{DATETIME}}</span></i></div>';
+var usernameTemplate = new Template("<span class='{0}'>{1}</span>");
 
 
 window.onfocus =  function(){
@@ -78,13 +79,15 @@ socket.on('updateusers', function(data) {
   });
 });
 
-function createComment( username, timestamp, data ) {
-  	var comment = gCommentTemplate;
-  	comment = comment.replace(/\{\{USER\}\}/g, username);
-  	comment = comment.replace(/\{\{DATETIME\}\}/g, timestamp);
-  	comment = comment.replace(/\{\{COMMENT\}\}/g, data);
-  	return comment;
-	}
+
+function createComment( fromUser, timestamp, data ) {
+  var comment = gCommentTemplate;
+  var callOut = data.indexOf(username) !== -1;
+  comment = comment.replace(/\{\{USER\}\}/g, usernameTemplate.render(callOut ? 'Callout' : '', fromUser));
+  comment = comment.replace(/\{\{DATETIME\}\}/g, timestamp);
+  comment = comment.replace(/\{\{COMMENT\}\}/g, data);
+  return comment;
+}
 
 $(function(){
   $('#datasend').click( function() {
@@ -103,3 +106,13 @@ $(function(){
   });
 });
 
+function Template(string){
+  this.string = string;
+  this.render = function(){
+    var args = Array.prototype.slice.call(arguments);
+    if(args.length === 1 && typeof args[0] === 'object'){
+      return this.string.replace(/{([^}]*)}/gm, function(match,key) { return args[0][key] });
+    }
+    return this.string.replace(/\{(\d+)\}/g, function(match, idx){ return args[idx] });
+  }
+}
