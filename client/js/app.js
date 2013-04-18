@@ -52,7 +52,7 @@ socket.on('connect', function(){
 
 });
 
-var linkTemplate = new Template('<a href="{0}" target="_blank">{1}</a>'
+var linkTemplate = new Template('<a href="{0}" target="_blank">{1}</a>');
 var imageTemplate = new Template('<div style="width:100%"><img style="max-width:100%" src="{0}" onerror="$(this).parent().hide()"></div>';
 function updateChat(timestamp, username, data, prepend){
   if (!data){
