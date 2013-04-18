@@ -98,6 +98,7 @@ socket.on('history', function(data){
   for (var i=0;i<shownHistory.length;i++){
     updateChat.apply(this, shownHistory[i]);
   }
+  $("#conversation").scrollTop($("#conversation")[0].scrollHeight);
 });
 
 function moarHistory(amount){
