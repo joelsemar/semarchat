@@ -105,7 +105,7 @@ function moarHistory(amount){
     historyItem.push(true);
     updateChat.apply(this, historyItem);
   });
-  $("#conversation").animate({ scrollTop: 0 });
+  $("#conversation").animate({ scrollTop: 0 }, 'slow');
 
 }
 
