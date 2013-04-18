@@ -21,7 +21,7 @@ catch(e){
   console.log("replace the config.js.template with local config.js file");
   process.exit(1);
 }
-  
+
 
 function dummyRedis(){
   client = {
@@ -53,6 +53,7 @@ server.listen(config.PORT);
         { name: 'orly', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/orly.png'},
         { name: 'twss', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/twss.png'},
         { name: 'allthethings', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/allthethings.png'},
+        { name: 'twss', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/twss-1348262400.png'},
   ]
  var badWords = ["<script>", "onload", "onmouse", "onerror", "onscroll"]
 
@@ -70,7 +71,7 @@ function reverse(s){
 }
 
 
-var auth = express.basicAuth(function(user, pass) {     
+var auth = express.basicAuth(function(user, pass) {
    return (user == "admin" && pass == "marissa");
 },'Super duper secret area');
 // routing
