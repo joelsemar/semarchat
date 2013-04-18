@@ -6,6 +6,7 @@ var isMobile = navigator.userAgent.match(/android|iphone|ipad/i);
 var username 
   , unSeenMessages = 0
   , history = []
+  , shownHistory
   , defaultHistorySize = isMobile ? 100 : 1000
   , windowFocused = true
   , tabToggle = false
@@ -47,12 +48,11 @@ socket.on('connect', function(){
   socket.emit('adduser', username);
   if(!hasHistory){
     socket.emit('gethistory', username);
-    hasHistory = true;
   }
 
 });
 
-function updateChat(timestamp, username, data){
+function updateChat(timestamp, username, data, prepend){
   if (!data){
       return;
   }
@@ -71,11 +71,16 @@ function updateChat(timestamp, username, data){
   if(!windowFocused){
     unSeenMessages += 1;
   }
-  $('#conversation').append( createComment(username, timestamp, data) );
+  if(prepend){
+    $('#conversation').prepend( createComment(username, timestamp, data) );
+  }
+  else{
+    $('#conversation').append( createComment(username, timestamp, data) );
+  }
   $("#conversation").scrollTop($("#conversation")[0].scrollHeight);
 }
 
-socket.on('updatechat',updateChat);
+socket.on('updatechat', updateChat);
 
 socket.on('updateusers', function(data) {
   $('#users').empty();
@@ -85,12 +90,23 @@ socket.on('updateusers', function(data) {
 });
 
 socket.on('history', function(data){
+  hasHistory = true;
   history = data;
-  var shownHistory = history.slice(history.length - defaultHistorySize, history.length);
+  shownHistory = history.slice(history.length - defaultHistorySize, history.length);
   for (var i=0;i<shownHistory.length;i++){
     updateChat.apply(this, shownHistory[i]);
   }
 });
+
+function moarHistory(amount){
+  var newHistory = history.slice(shownHistory.length - amount, shownHistory.length);
+  _.each(newHistory, function(historyItem){
+    shownHistory.unshift(historyItem);
+    historyItem.push(true);
+    updateChat.apply(this, historyItem);
+  });
+
+}
 
 
 function createComment( fromUser, timestamp, data ) {
