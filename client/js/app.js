@@ -52,6 +52,8 @@ socket.on('connect', function(){
 
 });
 
+var linkTemplate = new Template('<a href="{0}" target="_blank">{1}</a>'
+var imageTemplate = new Template('<div style="width:100%"><img style="max-width:100%" src="{0}" onerror="$(this).parent().hide()"></div>';
 function updateChat(timestamp, username, data, prepend){
   if (!data){
       return;
@@ -61,11 +63,11 @@ function updateChat(timestamp, username, data, prepend){
     if(urlrex.test(words[i])){
         var url = words[i];
         if(url.indexOf('http') === -1){
-            url = 'http://' + url;
+            url = new Template('http://{0}').render(url);
         }
-        link = '<a href="' + url + '" target="_blank">' + words[i] + '</a>'
+        link = linkTemplate.render(url, words[i]);
         data = data.replace(words[i], link);
-        data += '<div style="width:100%"><img style="max-width:100%" src="' + url + '" onerror="$(this).parent().hide()"></div>';
+        data += imageTemplate.render(url);
     }
   }
   if(prepend){
