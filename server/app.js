@@ -81,7 +81,7 @@ app.configure(function(){
   })
   app.post('/deploy', function(req, res){
      var exec  = require('child_process').exec;
-     var cmd = 'cd /home/joel/nodechat && git pull && sudo forever app.js restart';
+     var cmd = 'cd /home/joel/nodechat && git pull && cd server/ && sudo forever app.js restart';
      exec(cmd, function (error, stdout, stderr) {
         if (stdout){
             console.log(stdout);
