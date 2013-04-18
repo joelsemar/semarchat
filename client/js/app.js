@@ -2,13 +2,18 @@ var socket = io.connect();
 var hasHistory = false;
 var urlrex = new RegExp(/^(https?:\/\/)?[a-zA-Z0-9]+\.[a-zA-Z0-9]+/i )
 var defaultTitle = 'SemarChat';
+var isMobile = navigator.userAgent.match(/android|iphone|ipad/i);
 var username 
   , unSeenMessages = 0
+  , history = []
+  , shownHistory
+  , defaultHistorySize = isMobile ? 100 : 1000
   , windowFocused = true
   , tabToggle = false
   , tabFlashInterval;
   
 var gCommentTemplate = '<div class="Comment"><span class="CommentUser">{{USER}}</span>: {{COMMENT}}<br/><i><span class="DateTime">{{DATETIME}}</span></i></div>';
+var usernameTemplate = new Template("<span class='{0}'>{1}</span>");
 
 
 window.onfocus =  function(){
@@ -43,12 +48,13 @@ socket.on('connect', function(){
   socket.emit('adduser', username);
   if(!hasHistory){
     socket.emit('gethistory', username);
-    hasHistory = true;
   }
 
 });
 
-socket.on('updatechat', function (timestamp, username, data) {
+var linkTemplate = new Template('<a href="{0}" target="_blank">{1}</a>');
+var imageTemplate = new Template('<div style="width:100%"><img style="max-width:100%" src="{0}" onerror="$(this).parent().hide()"></div>');
+function updateChat(timestamp, username, data, prepend){
   if (!data){
       return;
   }
@@ -57,19 +63,26 @@ socket.on('updatechat', function (timestamp, username, data) {
     if(urlrex.test(words[i])){
         var url = words[i];
         if(url.indexOf('http') === -1){
-            url = 'http://' + url;
+            url = new Template('http://{0}').render(url);
         }
-        link = '<a href="' + url + '" target="_blank">' + words[i] + '</a>'
+        link = linkTemplate.render(url, words[i]);
         data = data.replace(words[i], link);
-        data += '<div style="width:100%"><img style="max-width:100%" src="' + url + '" onerror="$(this).parent().hide()"></div>';
+        data += imageTemplate.render(url);
     }
   }
-  if(!windowFocused){
-    unSeenMessages += 1;
+  if(prepend){
+    $('#conversation').prepend( createComment(username, timestamp, data) );
   }
-  $('#conversation').append( createComment(username, timestamp, data) );
-  $("#conversation").scrollTop($("#conversation")[0].scrollHeight);
-});
+  else{
+    $('#conversation').append( createComment(username, timestamp, data) );
+    $("#conversation").scrollTop($("#conversation")[0].scrollHeight);
+    if(!windowFocused){
+      unSeenMessages += 1;
+    }
+  }
+}
+
+socket.on('updatechat', updateChat);
 
 socket.on('updateusers', function(data) {
   $('#users').empty();
@@ -78,13 +91,35 @@ socket.on('updateusers', function(data) {
   });
 });
 
-function createComment( username, timestamp, data ) {
-  	var comment = gCommentTemplate;
-  	comment = comment.replace(/\{\{USER\}\}/g, username);
-  	comment = comment.replace(/\{\{DATETIME\}\}/g, timestamp);
-  	comment = comment.replace(/\{\{COMMENT\}\}/g, data);
-  	return comment;
-	}
+socket.on('history', function(data){
+  hasHistory = true;
+  history = data;
+  shownHistory = history.slice(history.length - defaultHistorySize, history.length);
+  for (var i=0;i<shownHistory.length;i++){
+    updateChat.apply(this, shownHistory[i]);
+  }
+});
+
+function moarHistory(amount){
+  var newHistory = history.slice(shownHistory.length - amount, shownHistory.length);
+  _.each(newHistory, function(historyItem){
+    shownHistory.unshift(historyItem);
+    historyItem.push(true);
+    updateChat.apply(this, historyItem);
+  });
+  $("#conversation").animate({ scrollTop: 0 }, 'slow');
+
+}
+
+
+function createComment( fromUser, timestamp, data ) {
+  var comment = gCommentTemplate;
+  var callOut = data.indexOf(username) !== -1 && fromUser !== username;
+  comment = comment.replace(/\{\{USER\}\}/g, usernameTemplate.render(callOut ? 'Callout' : '', fromUser));
+  comment = comment.replace(/\{\{DATETIME\}\}/g, timestamp);
+  comment = comment.replace(/\{\{COMMENT\}\}/g, data);
+  return comment;
+}
 
 $(function(){
   $('#datasend').click( function() {
@@ -102,12 +137,22 @@ $(function(){
     }
   });
   
-  if( navigator.userAgent.match(/android|iphone|ipad/i) ) {
-  	$("head").append('<meta name="viewport" content="initial-scale=1, maximum-scale=1">');
-  	$("head").append('<link href="css/mobile.css" rel="stylesheet">');
-  	}
+  if(isMobile) {
+    $("head").append('<meta name="viewport" content="initial-scale=1, maximum-scale=1">');
+    $("head").append('<link href="css/mobile.css" rel="stylesheet">');
+  }
   else {
-  	$("head").append('<link href="css/desktop.css" rel="stylesheet">');
-  	}
+    $("head").append('<link href="css/desktop.css" rel="stylesheet">');
+  }
 });
 
+function Template(string){
+  this.string = string;
+  this.render = function(){
+    var args = Array.prototype.slice.call(arguments);
+    if(args.length === 1 && typeof args[0] === 'object'){
+      return this.string.replace(/{([^}]*)}/gm, function(match,key) { return args[0][key] });
+    }
+    return this.string.replace(/\{(\d+)\}/g, function(match, idx){ return args[idx] });
+  }
+}

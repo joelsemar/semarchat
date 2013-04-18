@@ -49,6 +49,7 @@ server.listen(config.PORT);
         { name: 'derp', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/derp.png'},
         { name: 'facepalm', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/facepalm.png'},
         { name: 'okay', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/okay.png'},
+        { name: 'boom', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/boom.gif'},
         { name: 'orly', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/orly.png'},
         { name: 'twss', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/twss.png'},
         { name: 'allthethings', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/allthethings.png'},
@@ -79,6 +80,21 @@ app.configure(function(){
   app.get('/resume.pdf', function(req, res){
     res.sendfile('/home/joel/resume.pdf');
   })
+  app.post('/deploy', function(req, res){
+     var exec  = require('child_process').exec;
+     var cmd = 'cd /home/joel/nodechat && git pull && sudo forever restart app.js';
+     exec(cmd, function (error, stdout, stderr) {
+       if (stdout){
+         console.log(stdout);
+       }
+       if (stderr){
+         console.log('ERROR: ' + stderr);
+       }
+       if (error !== null) {
+         console.log('exec error: ' + error);
+       }
+     });
+  })
 
   app.get(/.*/, auth,  function (req, res) {
     res.sendfile(path.resolve('../client/index.html'));
@@ -106,18 +122,7 @@ io.sockets.on('connection', function (socket) {
      if(socket.lastMessageTime && new Date() - socket.lastMessageTime < 500){
        return;
      }
-     //data = 'Kyle is a douchecanoe';
     var username = socket.username;
-   // var username = 'spartacus';
-   // data = data.replace(/s/gi, 'sh');
-  //  data = data.replace(/f/gi, 't');
-  //  data = data.replace(/t/gi, 'f');
-  //  data = data.replace(/g/gi, 'k');
-   // data = data.replace(/k/gi, 'g');
-   // data = data.replace(/w/gi, 'v');
-    if(goodnames.indexOf(username) === -1){
-   //    data = data.toUpperCase();
-    }
     for (var i=0;i<badWords.length;i++){
       if (data.indexOf(badWords[i]) !== -1){
         return;
@@ -134,9 +139,6 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('adduser', function(username){
-    if(goodnames.indexOf(username) === -1){
-    //  return;
-    }
     socket.username = username;
     usernames[username] = username;
     io.sockets.emit('updateusers', usernames);
@@ -145,9 +147,7 @@ io.sockets.on('connection', function (socket) {
   socket.on('gethistory', function(){
     client.get('history', function(err, res){
       var history = JSON.parse(res || '[]');
-      for(var i=0;i<history.length;i++){
-        socket.emit('updatechat', history[i][0], history[i][1], history[i][2]);
-      }
+      socket.emit('history', history);
     })
   });
 
