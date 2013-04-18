@@ -104,6 +104,14 @@ $(function(){
       $("#data").focus();
     }
   });
+  
+  if( navigator.userAgent.match(/android|iphone|ipad/i) ) {
+  	$("head").append('<meta name="viewport" content="initial-scale=1, maximum-scale=1">');
+  	$("head").append('<link href="css/mobile.css" rel="stylesheet">');
+  	}
+  else {
+  	$("head").append('<link href="css/desktop.css" rel="stylesheet">');
+  	}
 });
 
 function Template(string){
