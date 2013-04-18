@@ -51,7 +51,6 @@ server.listen(config.PORT);
         { name: 'okay', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/okay.png'},
         { name: 'boom', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/boom.gif'},
         { name: 'orly', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/orly.png'},
-        { name: 'twss', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/twss.png'},
         { name: 'allthethings', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/allthethings.png'},
         { name: 'twss', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/twss-1348262400.png'},
   ]
