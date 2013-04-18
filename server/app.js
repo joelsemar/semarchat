@@ -49,7 +49,7 @@ server.listen(config.PORT);
         { name: 'derp', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/derp.png'},
         { name: 'facepalm', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/facepalm.png'},
         { name: 'okay', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/okay.png'},
-        { name: 'boom', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/boom.png'},
+        { name: 'boom', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/boom.gif'},
         { name: 'orly', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/orly.png'},
         { name: 'twss', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/twss.png'},
         { name: 'allthethings', img: 'https://dujrsrsgsd3nh.cloudfront.net/img/emoticons/allthethings.png'},
