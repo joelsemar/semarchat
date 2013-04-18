@@ -68,15 +68,15 @@ function updateChat(timestamp, username, data, prepend){
         data += '<div style="width:100%"><img style="max-width:100%" src="' + url + '" onerror="$(this).parent().hide()"></div>';
     }
   }
-  if(!windowFocused){
-    unSeenMessages += 1;
-  }
   if(prepend){
     $('#conversation').prepend( createComment(username, timestamp, data) );
   }
   else{
     $('#conversation').append( createComment(username, timestamp, data) );
     $("#conversation").scrollTop($("#conversation")[0].scrollHeight);
+    if(!windowFocused){
+      unSeenMessages += 1;
+    }
   }
 }
 
