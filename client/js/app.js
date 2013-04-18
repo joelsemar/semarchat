@@ -82,7 +82,7 @@ socket.on('updateusers', function(data) {
 
 function createComment( fromUser, timestamp, data ) {
   var comment = gCommentTemplate;
-  var callOut = data.indexOf(username) !== -1;
+  var callOut = data.indexOf(username) !== -1 && fromUser !== username;
   comment = comment.replace(/\{\{USER\}\}/g, usernameTemplate.render(callOut ? 'Callout' : '', fromUser));
   comment = comment.replace(/\{\{DATETIME\}\}/g, timestamp);
   comment = comment.replace(/\{\{COMMENT\}\}/g, data);
@@ -106,7 +106,7 @@ $(function(){
   });
   
   if( navigator.userAgent.match(/android|iphone|ipad/i) ) {
-  	$("head").append('<meta name="viewport" content="initial-scale=1, maximum-scale=1">');
+	$("head").append('<meta name="viewport" content="initial-scale=1, maximum-scale=1">');
   	$("head").append('<link href="css/mobile.css" rel="stylesheet">');
   	}
   else {
