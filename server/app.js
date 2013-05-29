@@ -6,6 +6,8 @@ var express = require('express')
   , io = require('socket.io').listen(server)
   , client;
 
+require('./dateformat.js');
+
 try{
    var redis = require('redis');
    client = redis.createClient();
@@ -132,7 +134,7 @@ io.sockets.on('connection', function (socket) {
     for (var j=0;j<emoticons.length;j++){
       data = data.replace('(' + emoticons[j].name + ')', "<img src='" + emoticons[j].img + "' title='" + emoticons[j].name + "'>");
     }
-    var chatEntry = [new Date().toLocaleTimeString(), username, data]
+    var chatEntry = [new Date().format(), username, data]
     io.sockets.emit('updatechat', chatEntry[0], chatEntry[1], chatEntry[2]);
     appendToHistory(chatEntry);
     socket.lastMessageTime = new Date();
