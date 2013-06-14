@@ -44,7 +44,10 @@ function toggleTab(){
 setInterval(toggleTab, 800);
 
 socket.on('connect', function(){
-  username = window.location.pathname.replace(/\//g, '') || prompt('Username:')
+  var username;
+  while(!username){
+    username = window.location.pathname.replace(/\//g, '') || prompt('Username:')
+  }
   socket.emit('adduser', username);
   if(!hasHistory){
     socket.emit('gethistory', username);
