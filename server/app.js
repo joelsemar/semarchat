@@ -77,7 +77,7 @@ var auth = express.basicAuth(function(user, pass) {
 },'Super duper secret area');
 // routing
 
-app.use(express.static(path.resolve('../client')));
+app.use(express.static(path.resolve('../client/static/')));
 app.configure(function(){
   app.get('/resume.pdf', function(req, res){
     res.sendfile('/home/joel/resume.pdf');
