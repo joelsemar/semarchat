@@ -3,15 +3,15 @@ var hasHistory = false;
 var urlrex = new RegExp(/^(https?:\/\/)?[a-zA-Z0-9]+\.[a-zA-Z0-9]+/i )
 var defaultTitle = 'SemarChat';
 var isMobile = navigator.userAgent.match(/android|iphone|ipad/i);
-var username 
+var username
   , unSeenMessages = 0
-  , history = []
+  , chatHistory = []
   , shownHistory
   , defaultHistorySize = isMobile ? 100 : 1000
   , windowFocused = true
   , tabToggle = false
   , tabFlashInterval;
-  
+
 var gCommentTemplate = '<div class="Comment"><span class="CommentUser">{{USER}}</span>: {{COMMENT}}<br/><i><span class="DateTime">{{DATETIME}}</span></i></div>';
 var usernameTemplate = new Template("<span class='{0}'>{1}</span>");
 
@@ -96,8 +96,8 @@ socket.on('updateusers', function(data) {
 
 socket.on('history', function(data){
   hasHistory = true;
-  history = data;
-  shownHistory = history.slice(history.length - defaultHistorySize, history.length);
+  chatHistory = data;
+  shownHistory = chatHistory.slice(chatHistory.length - defaultHistorySize, chatHistory.length);
   for (var i=0;i<shownHistory.length;i++){
     updateChat.apply(this, shownHistory[i]);
   }
@@ -105,7 +105,7 @@ socket.on('history', function(data){
 });
 
 function moarHistory(amount){
-  var newHistory = history.slice(shownHistory.length - amount, shownHistory.length);
+  var newHistory = chatHistory.slice(shownHistory.length - amount, shownHistory.length);
   _.each(newHistory, function(historyItem){
     shownHistory.unshift(historyItem);
     historyItem.push(true);
@@ -140,7 +140,7 @@ $(function(){
       $("#data").focus();
     }
   });
-  
+
   if(isMobile) {
     $("head").append('<meta name="viewport" content="initial-scale=1, maximum-scale=1">');
     $("head").append('<link href="css/mobile.css" rel="stylesheet">');
