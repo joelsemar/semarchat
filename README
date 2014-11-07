@@ -1,0 +1,12 @@
+To run using docker:
+
+start redis:
+    docker run --name redis -d redis
+This will run redis in a non persistant manner, so you cannot restart the redis container w/o losing history
+    
+Build the docker image:
+    docker build -t chatserver .
+
+Run the image linked to redis as a daemon
+    docker run --link redis:redis -P -d chatserver 
+
